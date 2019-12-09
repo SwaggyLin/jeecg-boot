@@ -16,6 +16,8 @@
 	<modules>
 		<module>jeecg-boot-base-common</module>
 		<module>jeecg-boot-module-system</module>
+		<module>jeecg-boot-module-pokemon</module>
+		<module>jeecg-boot-module-tbk</module>
 	</modules>
 	
 	<distributionManagement>
