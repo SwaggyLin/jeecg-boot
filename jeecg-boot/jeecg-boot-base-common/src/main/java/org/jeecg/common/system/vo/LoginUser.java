@@ -38,6 +38,11 @@ public class LoginUser {
 	 */
 	private String realname;
 
+	/**
+	 * 登录人密码
+	 */
+	private String password;
+
      /**
       * 当前登录部门code
       */
@@ -79,5 +84,10 @@ public class LoginUser {
      * 同步工作流引擎1同步0不同步
      */
     private String activitiSync;
+
+	/**
+	 * 创建时间
+	 */
+	private Date createTime;
 
 }

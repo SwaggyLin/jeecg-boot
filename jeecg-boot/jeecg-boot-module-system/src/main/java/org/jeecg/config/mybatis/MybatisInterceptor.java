@@ -49,8 +49,15 @@ public class MybatisInterceptor implements Interceptor {
 			for (Field field : fields) {
 				log.debug("------field.name------" + field.getName());
 				try {
+					//update-begin--Author:scott  Date:20190828 for：关于使用Quzrtz 开启线程任务， #465
 					// 获取登录用户信息
-					LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+					LoginUser sysUser = null;
+					try{
+						sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+					}catch (Exception e){
+						sysUser = null;
+					}
+					//update-end--Author:scott  Date:20190828 for：关于使用Quzrtz 开启线程任务， #465
 					if ("createBy".equals(field.getName())) {
 						field.setAccessible(true);
 						Object local_createBy = field.get(parameter);
@@ -106,7 +113,20 @@ public class MybatisInterceptor implements Interceptor {
 			Field[] fields = null;
 			if (parameter instanceof ParamMap) {
 				ParamMap<?> p = (ParamMap<?>) parameter;
-				parameter = p.get("param1");
+				//update-begin-author:scott date:20190729 for:批量更新报错issues/IZA3Q--
+				if (p.containsKey("et")) {
+					parameter = p.get("et");
+				} else {
+					parameter = p.get("param1");
+				}
+				//update-end-author:scott date:20190729 for:批量更新报错issues/IZA3Q-
+
+				//update-begin-author:scott date:20190729 for:更新指定字段时报错 issues/#516-
+				if (parameter == null) {
+					return invocation.proceed();
+				}
+				//update-end-author:scott date:20190729 for:更新指定字段时报错 issues/#516-
+
 				fields = oConvertUtils.getAllFields(parameter);
 			} else {
 				fields = oConvertUtils.getAllFields(parameter);
@@ -116,35 +136,23 @@ public class MybatisInterceptor implements Interceptor {
 				log.debug("------field.name------" + field.getName());
 				try {
 					if ("updateBy".equals(field.getName())) {
-						field.setAccessible(true);
-						Object local_updateBy = field.get(parameter);
-						field.setAccessible(false);
-						if (local_updateBy == null || local_updateBy.equals("")) {
-							String updateBy = "jeecg";
-							// 获取登录用户信息
-							LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
-							if (sysUser != null) {
-								// 登录账号
-								updateBy = sysUser.getUsername();
-							}
-							if (oConvertUtils.isNotEmpty(updateBy)) {
-								field.setAccessible(true);
-								field.set(parameter, updateBy);
-								field.setAccessible(false);
-							}
+						//获取登录用户信息
+						LoginUser sysUser = (LoginUser) SecurityUtils.getSubject().getPrincipal();
+						if (sysUser != null) {
+							// 登录账号
+							String updateBy = sysUser.getUsername();
+							field.setAccessible(true);
+							field.set(parameter, updateBy);
+							field.setAccessible(false);
 						}
 					}
 					if ("updateTime".equals(field.getName())) {
 						field.setAccessible(true);
-						Object local_updateDate = field.get(parameter);
+						field.set(parameter, new Date());
 						field.setAccessible(false);
-						if (local_updateDate == null || local_updateDate.equals("")) {
-							field.setAccessible(true);
-							field.set(parameter, new Date());
-							field.setAccessible(false);
-						}
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 				}
 			}
 		}

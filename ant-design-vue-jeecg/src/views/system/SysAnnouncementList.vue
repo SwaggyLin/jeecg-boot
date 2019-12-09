@@ -3,7 +3,7 @@
 
     <!-- 查询区域 -->
     <div class="table-page-search-wrapper">
-      <a-form layout="inline">
+      <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
 
           <a-col :span="6">
@@ -68,13 +68,13 @@
         @change="handleTableChange">
 
         <span slot="action" slot-scope="text, record">
-          <a @click="handleEdit(record)">编辑</a>
+          <a  v-if="record.sendStatus == 0" @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical"/>
+          <a-divider type="vertical" v-if="record.sendStatus == 0"/>
           <a-dropdown>
             <a class="ant-dropdown-link">更多 <a-icon type="down"/></a>
             <a-menu slot="overlay">
-              <a-menu-item>
+              <a-menu-item v-if="record.sendStatus != 1">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
@@ -88,6 +88,9 @@
                 <a-popconfirm title="确定撤销吗?" @confirm="() => reovkeData(record.id)">
                   <a>撤销</a>
                 </a-popconfirm>
+              </a-menu-item>
+              <a-menu-item>
+                  <a @click="handleDetail(record)">查看</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
