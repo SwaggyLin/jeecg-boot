@@ -3,10 +3,15 @@ package org.jeecg.modules.tbk.util;
 import com.taobao.api.ApiException;
 import com.taobao.api.DefaultTaobaoClient;
 import com.taobao.api.TaobaoClient;
+import com.taobao.api.domain.NTbkShop;
 import com.taobao.api.request.TbkActivitylinkGetRequest;
+import com.taobao.api.request.TbkDgOptimusMaterialRequest;
+import com.taobao.api.request.TbkShopGetRequest;
 import com.taobao.api.request.TbkSpreadGetRequest;
 import com.taobao.api.request.TbkSpreadGetRequest.TbkSpreadRequest;
 import com.taobao.api.response.TbkActivitylinkGetResponse;
+import com.taobao.api.response.TbkDgOptimusMaterialResponse;
+import com.taobao.api.response.TbkShopGetResponse;
 import com.taobao.api.response.TbkSpreadGetResponse;
 
 import java.util.ArrayList;
@@ -52,9 +57,9 @@ public class TbkTools {
         req.setPlatform(1L);
         req.setUnionId("demo");
         req.setAdzoneId(109875200336L);
-        req.setPromotionSceneId(1577771853640L);
+        req.setPromotionSceneId(1577771853635L);
         req.setSubPid("mm_741960020_1177650241_109875200336");
-        req.setRelationId("23");
+        //req.setRelationId("23");
         TbkActivitylinkGetResponse rsp = client.execute(req);
         System.out.println(rsp.getBody());
         return null;
@@ -81,7 +86,56 @@ public class TbkTools {
 //        System.out.println(rsp.getBody());
         return null;
     }
+
+    /**
+     * 根据关键词获取淘宝客店铺
+     * @return
+     * @throws ApiException
+     */
+    public static List<NTbkShop> getTbkShop() throws ApiException {
+        TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
+        TbkShopGetRequest req = new TbkShopGetRequest();
+        req.setFields("user_id,shop_title,shop_type,seller_nick,pict_url,shop_url");
+        req.setQ("游戏");
+        req.setSort("commission_rate_des");
+        req.setIsTmall(false);
+        req.setStartCredit(1L);
+        req.setEndCredit(20L);
+        req.setStartCommissionRate(1L);
+        req.setEndCommissionRate(10000L);
+        req.setStartTotalAction(1L);
+        req.setEndTotalAction(100L);
+        req.setStartAuctionCount(1L);
+        req.setEndAuctionCount(200L);
+        req.setPlatform(1L);
+        req.setPageNo(1L);
+        req.setPageSize(20L);
+        TbkShopGetResponse rsp = client.execute(req);
+        System.out.println(rsp.getBody());
+        return rsp.getResults();
+    }
+
+    /**
+     * 通用物料推荐，传入官方公布的物料id，可获取指定物料
+     * @throws ApiException
+     */
+    public static void getTbkOptimusMaterial() throws ApiException {
+        TaobaoClient client = new DefaultTaobaoClient(API_URL, APP_KEY, SECRET);
+        TbkDgOptimusMaterialRequest req = new TbkDgOptimusMaterialRequest();
+        req.setPageSize(20L);
+        req.setAdzoneId(109875200336L);
+        req.setPageNo(1L);
+        req.setMaterialId(3756L);
+//        req.setDeviceValue("xxx");
+//        req.setDeviceEncrypt("MD5");
+//        req.setDeviceType("IMEI");
+//        req.setContentId(323L);
+//        req.setContentSource("xxx");
+//        req.setItemId(33243L);
+        TbkDgOptimusMaterialResponse rsp = client.execute(req);
+        System.out.println(rsp.getBody());
+    }
     public static void main(String path[]) throws Exception {
-        System.out.println(getTbkActivityLink());
+        getTbkOptimusMaterial();
     }
 }
