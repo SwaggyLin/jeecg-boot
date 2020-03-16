@@ -9,7 +9,7 @@ import org.jeecg.modules.pokemon.entity.PokemonHandbook;
 import java.util.List;
 @Slf4j
 public class PokemonUtil {
-    public static final String UPLOAD_PATH="/opt/mk-fun/upload";
+    public static final String UPLOAD_PATH="/opt/mk-vn/upload";
     public static final String FETCH_URL="https://cn.portal-pokemon.com/play/pokedex/api/v1";
     public static final String IMG_URL="https://cn.portal-pokemon.com/play/resources/pokedex";
 
