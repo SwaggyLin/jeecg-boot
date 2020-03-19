@@ -11,4 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IEduTeacherService extends IService<EduTeacher> {
 
+    void addTeacherWithSubject(EduTeacher eduTeacher, String selectedSubjects);
+
+    void editTeacherWithSubject(EduTeacher eduTeacher, String selectedSubjects);
 }

@@ -6,6 +6,7 @@ import org.jeecg.modules.system.entity.SysDepart;
 import org.jeecg.modules.system.model.SysDepartTreeModel;
 import org.jeecg.modules.system.model.TreeModel;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * @Author: Steve
  * @Since：   2019-01-22
  */
+@Repository
 public interface SysDepartMapper extends BaseMapper<SysDepart> {
 	
 	/**

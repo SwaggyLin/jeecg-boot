@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.system.entity.SysUser;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.jeecg.modules.system.model.SysUserSysDepartModel;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * @Author scott
  * @since 2018-12-20
  */
+@Repository
 public interface SysUserMapper extends BaseMapper<SysUser> {
 	/**
 	  * 通过用户账号查询用户信息

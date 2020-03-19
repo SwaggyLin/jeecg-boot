@@ -13,7 +13,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('教师')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('教师科目关联表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -84,24 +84,24 @@
       </a-table>
     </div>
 
-    <eduTeacher-modal ref="modalForm" @ok="modalFormOk"></eduTeacher-modal>
+    <eduTeacherSubject-modal ref="modalForm" @ok="modalFormOk"></eduTeacherSubject-modal>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import EduTeacherModal from './modules/EduTeacherModal'
+  import EduTeacherSubjectModal from './modules/EduTeacherSubjectModal'
 
   export default {
-    name: "EduTeacherList",
+    name: "EduTeacherSubjectList",
     mixins:[JeecgListMixin],
     components: {
-      EduTeacherModal
+      EduTeacherSubjectModal
     },
     data () {
       return {
-        description: '教师管理页面',
+        description: '教师科目关联表管理页面',
         // 表头
         columns: [
           {
@@ -115,30 +115,14 @@
             }
           },
           {
-            title:'教师名称',
+            title:'教师id',
             align:"center",
-            dataIndex: 'teacherName'
+            dataIndex: 'teacherId'
           },
           {
-            title:'头像',
+            title:'科目id',
             align:"center",
-            dataIndex: 'avatar',
-            scopedSlots: {customRender: 'imgSlot'}
-          },
-          {
-            title:'性别',
-            align:"center",
-            dataIndex: 'sex_dictText'
-          },
-          {
-            title:'电话',
-            align:"center",
-            dataIndex: 'mobile'
-          },
-          {
-            title:'邮箱',
-            align:"center",
-            dataIndex: 'email'
+            dataIndex: 'subjectId'
           },
           {
             title: '操作',
@@ -148,14 +132,13 @@
           }
         ],
         url: {
-          list: "/edu/user/eduTeacher/list",
-          delete: "/edu/user/eduTeacher/delete",
-          deleteBatch: "/edu/user/eduTeacher/deleteBatch",
-          exportXlsUrl: "/edu/user/eduTeacher/exportXls",
-          importExcelUrl: "edu/user/eduTeacher/importExcel",
+          list: "/edu/eduTeacherSubject/list",
+          delete: "/edu/eduTeacherSubject/delete",
+          deleteBatch: "/edu/eduTeacherSubject/deleteBatch",
+          exportXlsUrl: "/edu/eduTeacherSubject/exportXls",
+          importExcelUrl: "edu/eduTeacherSubject/importExcel",
         },
         dictOptions:{
-         sex:[],
         },
       }
     },
@@ -165,6 +148,8 @@
       }
     },
     methods: {
+      initDictConfig(){
+      }
        
     }
   }

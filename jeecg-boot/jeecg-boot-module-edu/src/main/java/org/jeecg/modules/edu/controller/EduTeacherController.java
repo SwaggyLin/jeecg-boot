@@ -1,5 +1,6 @@
 package org.jeecg.modules.edu.controller;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.edu.entity.EduTeacher;
+import org.jeecg.modules.edu.entity.EduTeacherSubject;
 import org.jeecg.modules.edu.service.IEduTeacherService;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -20,6 +24,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 
+import org.jeecg.modules.edu.service.IEduTeacherSubjectService;
 import org.jeecgframework.poi.excel.ExcelImportUtil;
 import org.jeecgframework.poi.excel.def.NormalExcelConstants;
 import org.jeecgframework.poi.excel.entity.ExportParams;
@@ -45,6 +50,8 @@ import com.alibaba.fastjson.JSON;
 public class EduTeacherController extends JeecgController<EduTeacher, IEduTeacherService> {
 	@Autowired
 	private IEduTeacherService eduTeacherService;
+	@Autowired
+	private IEduTeacherSubjectService eduTeacherSubjectService;
 	
 	/**
 	 * 分页列表查询
@@ -69,13 +76,23 @@ public class EduTeacherController extends JeecgController<EduTeacher, IEduTeache
 	/**
 	 *   添加
 	 *
-	 * @param eduTeacher
+	 * @param jsonObject
 	 * @return
 	 */
 	@PostMapping(value = "/add")
-	public Result<?> add(@RequestBody EduTeacher eduTeacher) {
-		eduTeacherService.save(eduTeacher);
-		return Result.ok("添加成功！");
+	public Result<?> add(@RequestBody JSONObject jsonObject) {
+		Result<EduTeacher> result = new Result<EduTeacher>();
+		String selectedSubjects = jsonObject.getString("selectedSubjects");
+
+		try {
+			EduTeacher eduTeacher = JSON.parseObject(jsonObject.toJSONString(), EduTeacher.class);
+			eduTeacherService.addTeacherWithSubject(eduTeacher,selectedSubjects);
+		}catch (Exception e) {
+			log.error(e.getMessage(), e);
+			result.error500("操作失败");
+		}
+		return result;
+
 	}
 	
 	/**
@@ -85,9 +102,17 @@ public class EduTeacherController extends JeecgController<EduTeacher, IEduTeache
 	 * @return
 	 */
 	@PutMapping(value = "/edit")
-	public Result<?> edit(@RequestBody EduTeacher eduTeacher) {
-		eduTeacherService.updateById(eduTeacher);
-		return Result.ok("编辑成功!");
+	public Result<?> edit(@RequestBody JSONObject jsonObject) {
+		Result<EduTeacher> result = new Result<EduTeacher>();
+		String selectedSubjects = jsonObject.getString("selectedSubjects");
+		try {
+			EduTeacher eduTeacher = JSON.parseObject(jsonObject.toJSONString(), EduTeacher.class);
+			eduTeacherService.editTeacherWithSubject(eduTeacher,selectedSubjects);
+		}catch (Exception e) {
+			log.error(e.getMessage(), e);
+			result.error500("操作失败");
+		}
+		return result;
 	}
 	
 	/**
@@ -151,5 +176,23 @@ public class EduTeacherController extends JeecgController<EduTeacher, IEduTeache
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, EduTeacher.class);
     }
+
+
+	 @RequestMapping(value = "/queryTeacherSubject", method = RequestMethod.GET)
+	 public Result<List<String>> queryTeacherSubject(@RequestParam(name = "teacherId", required = true) String teacherId) {
+		 Result<List<String>> result = new Result<>();
+		 List<String> list = new ArrayList<String>();
+		 List<EduTeacherSubject> teacherSubjects = eduTeacherSubjectService.list(new QueryWrapper<EduTeacherSubject>().lambda().eq(EduTeacherSubject::getTeacherId, teacherId));
+		 if (teacherSubjects == null || teacherSubjects.size() <= 0) {
+			 result.error500("未找到教师相关科目信息");
+		 } else {
+			 for (EduTeacherSubject teacherSubject : teacherSubjects) {
+				 list.add(teacherSubject.getSubjectId());
+			 }
+			 result.setSuccess(true);
+			 result.setResult(list);
+		 }
+		 return result;
+	 }
 
 }

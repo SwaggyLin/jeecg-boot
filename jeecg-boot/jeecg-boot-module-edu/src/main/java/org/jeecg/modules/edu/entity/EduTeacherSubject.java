@@ -4,27 +4,24 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.math.BigDecimal;
-import java.util.List;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.jeecg.common.aspect.annotation.ListToStr;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
 
 /**
- * @Description: 教师
+ * @Description: 教师科目关联表
  * @Author: jeecg-boot
- * @Date:   2020-03-18
+ * @Date:   2020-03-19
  * @Version: V1.0
  */
 @Data
-@TableName("edu_teacher")
-public class EduTeacher implements Serializable {
+@TableName("edu_teacher_subject")
+public class EduTeacherSubject implements Serializable {
     private static final long serialVersionUID = 1L;
     
 	/**主键*/
@@ -46,20 +43,19 @@ public class EduTeacher implements Serializable {
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private java.util.Date updateTime;
-	/**教师名称*/
-	@Excel(name = "教师名称", width = 15)
-    private java.lang.String teacherName;
-	/**头像*/
-	@Excel(name = "头像", width = 15)
-    private java.lang.String avatar;
-	/**性别*/
-	@Excel(name = "性别", width = 15)
-	@Dict(dicCode = "sex")
-    private java.lang.String sex;
-	/**电话*/
-	@Excel(name = "电话", width = 15)
-    private java.lang.String mobile;
-	/**邮箱*/
-	@Excel(name = "邮箱", width = 15)
-    private java.lang.String email;
+	/**教师id*/
+	@Excel(name = "教师id", width = 15)
+    private java.lang.String teacherId;
+	/**科目id*/
+	@Excel(name = "科目id", width = 15)
+    private java.lang.String subjectId;
+
+	public EduTeacherSubject() {
+
+	}
+
+    public EduTeacherSubject(String teacherId, String subjectId) {
+    	this.teacherId=teacherId;
+    	this.subjectId=subjectId;
+    }
 }

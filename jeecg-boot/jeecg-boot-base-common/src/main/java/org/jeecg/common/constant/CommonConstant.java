@@ -150,6 +150,9 @@ public interface CommonConstant {
     /**字典翻译文本后缀*/
     public static final String DICT_TEXT_SUFFIX = "_dictText";
 
+    /**数组转字符串后缀*/
+    public static final String LIST_TO_STR_SUFFIX = "_listStr";
+
     /**
      * 表单设计器主表类型
      */

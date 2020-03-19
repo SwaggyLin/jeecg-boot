@@ -9,6 +9,7 @@ import org.jeecg.modules.system.entity.SysPermission;
 import org.jeecg.modules.system.model.TreeModel;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
 
 /**
  * <p>
@@ -18,6 +19,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  * @Author scott
  * @since 2018-12-21
  */
+@Repository
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 	/**
 	   * 通过父菜单ID查询子菜单

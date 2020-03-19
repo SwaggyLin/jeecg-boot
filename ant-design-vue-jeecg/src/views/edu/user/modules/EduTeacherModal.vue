@@ -13,6 +13,18 @@
         <a-form-item label="教师名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'teacherName', validatorRules.teacherName]" placeholder="请输入教师名称"></a-input>
         </a-form-item>
+        <a-form-item label="负责科目" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <a-select
+            mode="multiple"
+            style="width: 100%"
+            placeholder="请选择科目"
+            optionFilterProp = "children"
+            v-model="selectedSubject">
+            <a-select-option v-for="(subject,subjectindex) in subjectList" :key="subjectindex.toString()" :value="subject.id">
+              {{ subject.subjectName }}
+            </a-select-option>
+          </a-select>
+        </a-form-item>
         <a-form-item label="头像" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <j-upload v-decorator="['avatar', validatorRules.avatar]" :trigger-change="true"></j-upload>
         </a-form-item>
@@ -38,6 +50,7 @@
   import { validateDuplicateValue } from '@/utils/util'
   import JUpload from '@/components/jeecg/JUpload'
   import JDictSelectTag from "@/components/dict/JDictSelectTag"
+  import {queryAllSubjects,queryTeacherSubject} from "@/api/api"
 
   export default {
     name: "EduTeacherModal",
@@ -49,6 +62,8 @@
       return {
         form: this.$form.createForm(this),
         title:"操作",
+        subjectList:[],
+        selectedSubject:[],
         width:800,
         visible: false,
         model: {},
@@ -84,10 +99,30 @@
     created () {
     },
     methods: {
+      initialSubjectList(){
+        queryAllSubjects().then((res)=>{
+          if(res.success){
+            this.subjectList = res.result;
+          }else{
+            console.log(res.message);
+          }
+        });
+      },
+      loadTeacherSubject(teacherId){
+        queryTeacherSubject({teacherId:teacherId}).then((res)=>{
+          if(res.success){
+            this.selectedSubject = res.result;
+          }else{
+            console.log(res.message);
+          }
+        });
+      },
       add () {
         this.edit({});
       },
       edit (record) {
+        this.initialSubjectList();
+        this.loadTeacherSubject(record.id);
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
@@ -97,6 +132,7 @@
       },
       close () {
         this.$emit('close');
+        this.selectedSubject = [];
         this.visible = false;
       },
       handleOk () {
@@ -115,6 +151,8 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
+            formData.selectedSubjects = this.selectedSubject.length>0?this.selectedSubject.join(","):'';
+
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
               if(res.success){

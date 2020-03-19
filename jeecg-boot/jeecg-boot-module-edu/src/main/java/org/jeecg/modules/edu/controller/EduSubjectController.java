@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * @Description: 科目
@@ -135,5 +136,18 @@ public class EduSubjectController extends JeecgController<EduSubject, IEduSubjec
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, EduSubject.class);
     }
+
+    @RequestMapping(value = "/queryall", method = RequestMethod.GET )
+	public Result<List<EduSubject>> queryAll(){
+		Result<List<EduSubject>> result = new Result<>();
+		List<EduSubject> list = eduSubjectService.list();
+		if(list==null||list.size()<=0) {
+			result.error500("未找到科目信息");
+		}else {
+			result.setResult(list);
+			result.setSuccess(true);
+		}
+		return result;
+	}
 
 }

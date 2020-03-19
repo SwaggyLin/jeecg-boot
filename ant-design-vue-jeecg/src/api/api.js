@@ -95,6 +95,12 @@ const duplicateCheck = (params)=>getAction("/sys/duplicate/check",params);
 // 加载分类字典
 const loadCategoryData = (params)=>getAction("/sys/category/loadAllData",params);
 
+//科目
+const queryAllSubjects=(params)=>getAction("/edu/eduSubject/queryall",params);
+
+//教师
+const queryTeacherSubject=(params)=>getAction("/edu/user/eduTeacher/queryTeacherSubject",params);
+
 export {
   // imgView,
   // doMian,
@@ -142,7 +148,9 @@ export {
   queryTreeListForRole,
   getSystemMenuList,
   getSystemSubmenu,
-  loadCategoryData
+  loadCategoryData,
+  queryAllSubjects,
+  queryTeacherSubject
 }
 
 
