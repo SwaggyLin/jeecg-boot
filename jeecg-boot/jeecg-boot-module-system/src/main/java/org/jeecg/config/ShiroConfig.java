@@ -121,6 +121,9 @@ public class ShiroConfig {
 		filterChainDefinitionMap.put("/test/jeecgDemo/html", "anon"); //模板页面
 		filterChainDefinitionMap.put("/test/jeecgDemo/redis/**", "anon"); //redis测试
 
+		filterChainDefinitionMap.put("/test/annotation/**", "anon"); //自定义注解测试
+
+
 		//排除Online请求
 		filterChainDefinitionMap.put("/auto/cgform/**", "anon");
 		
