@@ -122,7 +122,9 @@
       },
       edit (record) {
         this.initialSubjectList();
-        this.loadTeacherSubject(record.id);
+        if(record.hasOwnProperty("id")){
+          this.loadTeacherSubject(record.id);
+        }
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;
