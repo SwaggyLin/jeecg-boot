@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import ${bussiPackage}.${entityPackage}.entity.${entityName};
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.springframework.stereotype.Repository;
+
 
 /**
  * @Description: ${tableVo.ftlDescription}
