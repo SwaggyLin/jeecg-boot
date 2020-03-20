@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.common.util.oConvertUtils;
+import org.jeecg.modules.edu.entity.EduSubject;
 import org.jeecg.modules.edu.entity.EduTeacher;
 import org.jeecg.modules.edu.entity.EduTeacherSubject;
 import org.jeecg.modules.edu.service.IEduTeacherService;
@@ -191,6 +192,18 @@ public class EduTeacherController extends JeecgController<EduTeacher, IEduTeache
 			 }
 			 result.setSuccess(true);
 			 result.setResult(list);
+		 }
+		 return result;
+	 }
+	 @RequestMapping(value = "/queryall", method = RequestMethod.GET )
+	 public Result<List<EduTeacher>> queryAll(){
+		 Result<List<EduTeacher>> result = new Result<>();
+		 List<EduTeacher> list = eduTeacherService.list();
+		 if(list==null||list.size()<=0) {
+			 result.error500("未找到教师信息");
+		 }else {
+			 result.setResult(list);
+			 result.setSuccess(true);
 		 }
 		 return result;
 	 }

@@ -66,6 +66,8 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 	private ISysDepartService sysDepartService;
 	@Autowired
 	private ISysDictService sysDictService;
+	@Autowired
+	private SysCommonMapper sysCommonMapper;
 	@Resource
 	private SysAnnouncementMapper sysAnnouncementMapper;
 	@Resource
@@ -448,5 +450,10 @@ public class SysBaseApiImpl implements ISysBaseAPI {
 			departModelList.add(model);
 		}
 		return departModelList;
+	}
+
+	@Override
+	public String getRelativeData(String tableName, String fieldName, String primaryKey, String relativeKey) {
+		return sysCommonMapper.getRelativeData(tableName,fieldName,primaryKey,relativeKey);
 	}
 }

@@ -193,5 +193,14 @@ public interface ISysBaseAPI {
 	 * @return
 	 */
 	public List<SysDepartModel> getAllSysDepart();
-	
+
+	/**
+	 * 查看关联表中的数据
+	 * @param tableName
+	 * @param fieldName
+	 * @param primaryKey
+	 * @param relativeKey
+	 * @return
+	 */
+	String getRelativeData(String tableName, String fieldName, String primaryKey, String relativeKey);
 }

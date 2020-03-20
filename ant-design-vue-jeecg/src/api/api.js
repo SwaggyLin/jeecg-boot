@@ -99,7 +99,9 @@ const loadCategoryData = (params)=>getAction("/sys/category/loadAllData",params)
 const queryAllSubjects=(params)=>getAction("/edu/eduSubject/queryall",params);
 
 //教师
+const queryAllTeachers=(params)=>getAction("/edu/user/eduTeacher/queryall",params);
 const queryTeacherSubject=(params)=>getAction("/edu/user/eduTeacher/queryTeacherSubject",params);
+
 
 export {
   // imgView,
@@ -150,6 +152,7 @@ export {
   getSystemSubmenu,
   loadCategoryData,
   queryAllSubjects,
+  queryAllTeachers,
   queryTeacherSubject
 }
 

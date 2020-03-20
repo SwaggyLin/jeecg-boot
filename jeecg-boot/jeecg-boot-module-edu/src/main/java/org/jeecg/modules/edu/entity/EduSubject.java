@@ -49,6 +49,6 @@ public class EduSubject implements Serializable {
     private java.lang.Integer subjectPeriod;
 	/**类型*/
 	@Excel(name = "类型", width = 15)
-	@Dict(dicCode = "subjectType")
+	@Dict(dicCode = "subject_type")
     private java.lang.String subjectType;
 }

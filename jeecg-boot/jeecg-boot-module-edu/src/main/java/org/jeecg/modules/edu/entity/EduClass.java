@@ -1,25 +1,26 @@
 package org.jeecg.modules.edu.entity;
 
-import java.io.Serializable;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.jeecgframework.poi.excel.annotation.Excel;
+import lombok.Data;
 import org.jeecg.common.aspect.annotation.Dict;
+import org.jeecg.common.aspect.annotation.RelativeData;
+import org.jeecgframework.poi.excel.annotation.Excel;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.io.Serializable;
 
 /**
- * @Description: 教师
+ * @Description: 班级
  * @Author: jeecg-boot
- * @Date:   2020-03-18
+ * @Date:   2020-03-20
  * @Version: V1.0
  */
 @Data
-@TableName("edu_teacher")
-public class EduTeacher implements Serializable {
+@TableName("edu_class")
+public class EduClass implements Serializable {
     private static final long serialVersionUID = 1L;
     
 	/**主键*/
@@ -41,20 +42,18 @@ public class EduTeacher implements Serializable {
 	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private java.util.Date updateTime;
-	/**教师名称*/
-	@Excel(name = "教师名称", width = 15)
-    private java.lang.String teacherName;
-	/**头像*/
-	@Excel(name = "头像", width = 15)
-    private java.lang.String avatar;
-	/**性别*/
-	@Excel(name = "性别", width = 15)
-	@Dict(dicCode = "sex")
-    private java.lang.String sex;
-	/**电话*/
-	@Excel(name = "电话", width = 15)
-    private java.lang.String mobile;
-	/**邮箱*/
-	@Excel(name = "邮箱", width = 15)
-    private java.lang.String email;
+	/**班级名称*/
+	@Excel(name = "班级名称", width = 15)
+    private java.lang.String className;
+	/**学生人数*/
+	@Excel(name = "学生人数", width = 15)
+    private java.lang.Integer studentNum;
+	/**班主任*/
+	@Excel(name = "班主任", width = 15)
+	@RelativeData(mainTable = "edu_teacher",fieldName = "teacher_name")
+    private java.lang.String classTeacherId;
+	/**年级*/
+	@Excel(name = "年级", width = 15)
+	@Dict(dicCode = "class_grade")
+    private java.lang.String classGrade;
 }
