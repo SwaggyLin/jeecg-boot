@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.jeecg.common.aspect.annotation.RelativeData;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.jeecgframework.poi.excel.annotation.Excel;
 import org.jeecg.common.aspect.annotation.Dict;
@@ -50,9 +51,9 @@ public class EduStudent implements Serializable {
 	@Excel(name = "性别", width = 15)
     private java.lang.String sex;
 	/**出生年月*/
-	@Excel(name = "出生年月", width = 15, format = "yyyy-MM-dd")
-	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    @DateTimeFormat(pattern="yyyy-MM-dd")
+	@Excel(name = "出生年月", width = 15, format = "yyyy-MM")
+	@JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM")
+    @DateTimeFormat(pattern="yyyy-MM")
     private java.util.Date birthDate;
 	/**家庭住址*/
 	@Excel(name = "家庭住址", width = 15)
@@ -71,5 +72,6 @@ public class EduStudent implements Serializable {
     private java.lang.Integer age;
 	/**所属班级*/
 	@Excel(name = "所属班级", width = 15)
+	@RelativeData(mainTable = "edu_class",fieldName = "class_name")
     private java.lang.String classId;
 }

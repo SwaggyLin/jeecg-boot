@@ -17,7 +17,7 @@
           <j-dict-select-tag type="list" v-decorator="['sex', validatorRules.sex]" :trigger-change="true" dictCode="sex" placeholder="请选择性别"/>
         </a-form-item>
         <a-form-item label="出生年月" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-date placeholder="请选择出生年月" v-decorator="[ 'birthDate', validatorRules.birthDate]" :trigger-change="true" style="width: 100%"/>
+          <a-month-picker placeholder="请选择出生年月" v-decorator="[ 'birthDate', validatorRules.birthDate]" :trigger-change="true" style="width: 100%" @change="this.handleDateChange"/>
         </a-form-item>
         <a-form-item label="家庭住址" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'address', validatorRules.address]" placeholder="请输入家庭住址"></a-input>
@@ -32,10 +32,19 @@
           <a-input v-decorator="[ 'seatNum', validatorRules.seatNum]" placeholder="请输入座号"></a-input>
         </a-form-item>
         <a-form-item label="年龄" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'age', validatorRules.age]" placeholder="请输入年龄" style="width: 100%"/>
+          <a-input-number v-decorator="[ 'age', validatorRules.age]" placeholder="请输入年龄" disabled style="width: 100%"/>
         </a-form-item>
         <a-form-item label="所属班级" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['classId', validatorRules.classId]" :trigger-change="true" dictCode="" placeholder="请选择所属班级"/>
+          <a-select
+            v-decorator="[ 'classId', validatorRules.classId]"
+            style="width: 100%"
+            placeholder="请选择班级"
+            optionFilterProp = "children"
+            :showSearch="true">
+            <a-select-option v-for="(eduClass) in eduClassList" :key="eduClass.id" :value="eduClass.id">
+              {{ eduClass.className }}
+            </a-select-option>
+          </a-select>
         </a-form-item>
         
       </a-form>
@@ -51,18 +60,18 @@
   import pick from 'lodash.pick'
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
-  import JDictSelectTag from "@/components/dict/JDictSelectTag"
+  import {queryAllClasses} from '@/api/api'
   
   export default {
     name: "EduStudentModal",
     components: { 
-      JDate,
-      JDictSelectTag,
+      JDate
     },
     data () {
       return {
         form: this.$form.createForm(this),
         title:"操作",
+        eduClassList:[],
         width:800,
         visible: false,
         model: {},
@@ -103,21 +112,48 @@
            {pattern:/^-?\d+\.?\d*$/, message: '请输入数字!'},
           ]},
           classId: {rules: [
+            {required: true, message: '请选择班级!'},
           ]},
         },
         url: {
-          add: "/edu/eduStudent/add",
-          edit: "/edu/eduStudent/edit",
+          add: "/edu/user/eduStudent/add",
+          edit: "/edu/user/eduStudent/edit",
         }
       }
     },
     created () {
     },
     methods: {
+      handleDateChange:function(value, dateString){
+        console.log(value, dateString);
+        if(value!=null&&dateString!=""){
+          let birthday=new Date(dateString.replace(/-/g, "/"));
+          let nowDate = new Date();
+          let age = nowDate.getFullYear() - birthday.getFullYear() - (nowDate.getMonth() < birthday.getMonth() || (birthday.getMonth() == birthday.getMonth())? 1 : 0);
+          age=age>0?age:0;
+          this.form.setFieldsValue({
+            age: age
+          });
+        }else{
+          this.form.setFieldsValue({
+            age: null
+          });
+        }
+      },
+      initialClassList(){
+        queryAllClasses().then((res)=>{
+          if(res.success){
+            this.eduClassList = res.result;
+          }else{
+            console.log(res.message);
+          }
+        });
+      },
       add () {
         this.edit({});
       },
       edit (record) {
+        this.initialClassList();
         this.form.resetFields();
         this.model = Object.assign({}, record);
         this.visible = true;

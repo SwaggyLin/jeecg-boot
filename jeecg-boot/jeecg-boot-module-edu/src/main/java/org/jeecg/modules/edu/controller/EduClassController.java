@@ -16,8 +16,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Arrays;
+import java.util.List;
 
- /**
+/**
  * @Description: 班级
  * @Author: jeecg-boot
  * @Date:   2020-03-20
@@ -135,5 +136,18 @@ public class EduClassController extends JeecgController<EduClass, IEduClassServi
     public Result<?> importExcel(HttpServletRequest request, HttpServletResponse response) {
         return super.importExcel(request, response, EduClass.class);
     }
+
+	@RequestMapping(value = "/queryall", method = RequestMethod.GET)
+	public Result<List<EduClass>> queryAll(){
+		Result<List<EduClass>> result = new Result<>();
+		List<EduClass> list = eduClassService.list();
+		if(list==null||list.size()<=0) {
+			result.error500("未找到班级信息");
+		}else {
+			result.setResult(list);
+			result.setSuccess(true);
+		}
+		return result;
+	}
 
 }

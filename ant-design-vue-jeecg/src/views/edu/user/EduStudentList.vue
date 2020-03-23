@@ -185,14 +185,7 @@
           {
             title:'所属班级',
             align:"center",
-            dataIndex: 'classId',
-            customRender:(text)=>{
-              if(!text){
-                return ''
-              }else{
-                return filterMultiDictText(this.dictOptions['classId'], text+"")
-              }
-            }
+            dataIndex: 'className'
           },
           {
             title: '操作',
