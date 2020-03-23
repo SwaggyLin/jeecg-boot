@@ -13,6 +13,9 @@
         <a-form-item label="班级名称" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input v-decorator="[ 'className', validatorRules.className]" placeholder="请输入班级名称"></a-input>
         </a-form-item>
+        <a-form-item label="年级" :labelCol="labelCol" :wrapperCol="wrapperCol">
+          <j-dict-select-tag type="list" v-decorator="['classGrade', validatorRules.classGrade]" :trigger-change="true" dictCode="class_grade" placeholder="请选择年级"/>
+        </a-form-item>
         <a-form-item label="学生人数" :labelCol="labelCol" :wrapperCol="wrapperCol">
           <a-input-number v-decorator="[ 'studentNum', validatorRules.studentNum]" placeholder="请输入学生人数" style="width: 100%"/>
         </a-form-item>
@@ -27,9 +30,6 @@
               {{ teacher.teacherName }}
             </a-select-option>
           </a-select>
-        </a-form-item>
-        <a-form-item label="年级" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <j-dict-select-tag type="list" v-decorator="['classGrade', validatorRules.classGrade]" :trigger-change="true" dictCode="class_grade" placeholder="请选择年级"/>
         </a-form-item>
 
       </a-form>

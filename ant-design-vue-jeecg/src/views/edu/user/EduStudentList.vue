@@ -4,9 +4,11 @@
     <div class="table-page-search-wrapper">
       <a-form layout="inline" @keyup.enter.native="searchQuery">
         <a-row :gutter="24">
-          <a-col :md="6" :sm="8">
-            <a-form-item label="年级">
-              <j-dict-select-tag placeholder="请选择年级" v-model="queryParam.classGrade" dictCode="class_grade"/>
+          <a-col :md="12" :sm="16">
+            <a-form-item label="姓名">
+              <a-input placeholder="请输入最小值" class="query-group-cust" v-model="queryParam.studentName_begin"></a-input>
+              <span class="query-group-split-cust"></span>
+              <a-input placeholder="请输入最大值" class="query-group-cust" v-model="queryParam.studentName_end"></a-input>
             </a-form-item>
           </a-col>
           <a-col :md="6" :sm="8" >
@@ -28,7 +30,7 @@
     <!-- 操作按钮区域 -->
     <div class="table-operator">
       <a-button @click="handleAdd" type="primary" icon="plus">新增</a-button>
-      <a-button type="primary" icon="download" @click="handleExportXls('班级')">导出</a-button>
+      <a-button type="primary" icon="download" @click="handleExportXls('学生信息表')">导出</a-button>
       <a-upload name="file" :showUploadList="false" :multiple="false" :headers="tokenHeader" :action="importExcelUrl" @change="handleImportExcel">
         <a-button type="primary" icon="import">导入</a-button>
       </a-upload>
@@ -99,27 +101,25 @@
       </a-table>
     </div>
 
-    <eduClass-modal ref="modalForm" @ok="modalFormOk"></eduClass-modal>
+    <eduStudent-modal ref="modalForm" @ok="modalFormOk"></eduStudent-modal>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import EduClassModal from './modules/EduClassModal'
-  import JDictSelectTag from '@/components/dict/JDictSelectTag.vue'
+  import EduStudentModal from './modules/EduStudentModal'
   import {initDictOptions, filterMultiDictText} from '@/components/dict/JDictSelectUtil'
 
   export default {
-    name: "EduClassList",
+    name: "EduStudentList",
     mixins:[JeecgListMixin],
     components: {
-      JDictSelectTag,
-      EduClassModal
+      EduStudentModal
     },
     data () {
       return {
-        description: '班级管理页面',
+        description: '学生信息表管理页面',
         // 表头
         columns: [
           {
@@ -133,24 +133,66 @@
             }
           },
           {
-            title:'班级名称',
+            title:'姓名',
             align:"center",
-            dataIndex: 'className'
+            dataIndex: 'studentName'
           },
           {
-            title:'学生人数',
+            title:'性别',
             align:"center",
-            dataIndex: 'studentNum'
+            dataIndex: 'sex',
+            customRender:(text)=>{
+              if(!text){
+                return ''
+              }else{
+                return filterMultiDictText(this.dictOptions['sex'], text+"")
+              }
+            }
           },
           {
-            title:'班主任',
+            title:'出生年月',
             align:"center",
-            dataIndex: 'teacherName'
+            dataIndex: 'birthDate',
+            customRender:function (text) {
+              return !text?"":(text.length>10?text.substr(0,10):text)
+            }
           },
           {
-            title:'年级',
+            title:'家庭住址',
             align:"center",
-            dataIndex: 'classGrade_dictText'
+            dataIndex: 'address'
+          },
+          {
+            title:'家长姓名',
+            align:"center",
+            dataIndex: 'parentName'
+          },
+          {
+            title:'联系电话',
+            align:"center",
+            dataIndex: 'mobile'
+          },
+          {
+            title:'座号',
+            align:"center",
+            dataIndex: 'seatNum'
+          },
+          {
+            title:'年龄',
+            align:"center",
+            dataIndex: 'age'
+          },
+          {
+            title:'所属班级',
+            align:"center",
+            dataIndex: 'classId',
+            customRender:(text)=>{
+              if(!text){
+                return ''
+              }else{
+                return filterMultiDictText(this.dictOptions['classId'], text+"")
+              }
+            }
           },
           {
             title: '操作',
@@ -160,12 +202,16 @@
           }
         ],
         url: {
-          list: "/edu/eduClass/list",
-          delete: "/edu/eduClass/delete",
-          deleteBatch: "/edu/eduClass/deleteBatch",
-          exportXlsUrl: "/edu/eduClass/exportXls",
-          importExcelUrl: "edu/eduClass/importExcel",
-        }
+          list: "/edu/user/eduStudent/list",
+          delete: "/edu/user/eduStudent/delete",
+          deleteBatch: "/edu/user/eduStudent/deleteBatch",
+          exportXlsUrl: "/edu/user/eduStudent/exportXls",
+          importExcelUrl: "edu/user/eduStudent/importExcel",
+        },
+        dictOptions:{
+         sex:[],
+         classId:[],
+        },
       }
     },
     computed: {
@@ -174,6 +220,18 @@
       }
     },
     methods: {
+      initDictConfig(){
+        initDictOptions('sex').then((res) => {
+          if (res.success) {
+            this.$set(this.dictOptions, 'sex', res.result)
+          }
+        })
+        initDictOptions('').then((res) => {
+          if (res.success) {
+            this.$set(this.dictOptions, 'classId', res.result)
+          }
+        })
+      }
        
     }
   }
