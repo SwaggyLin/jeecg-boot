@@ -1,7 +1,6 @@
 package org.jeecg.modules.system.aspect;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -45,10 +44,10 @@ public class RelativeDataAspect {
     private ISysBaseAPI sysBaseAPI;
     // 定义切点Pointcut
     @Pointcut("execution(public * org.jeecg.modules..*.*Controller.*(..))")
-    public void excudeService() {
+    public void excuteService() {
     }
 
-    @Around("excudeService()")
+    @Around("excuteService()")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
     	long time1=System.currentTimeMillis();	
         Object result = pjp.proceed();
@@ -83,7 +82,6 @@ public class RelativeDataAspect {
                         }
                         if (field.getAnnotation(RelativeData.class) != null) {
                             translateRelativeData(field,item);
-
                         }
                         //date类型默认转换string格式化日期
                         if (field.getType().getName().equals("java.util.Date")&&field.getAnnotation(JsonFormat.class)==null&&item.get(field.getName())!=null){
