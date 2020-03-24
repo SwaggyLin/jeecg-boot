@@ -152,10 +152,7 @@
           {
             title:'出生年月',
             align:"center",
-            dataIndex: 'birthDate',
-            customRender:function (text) {
-              return !text?"":(text.length>10?text.substr(0,10):text)
-            }
+            dataIndex: 'birthDate'
           },
           {
             title:'家庭住址',

@@ -61,6 +61,7 @@
   import { validateDuplicateValue } from '@/utils/util'
   import JDate from '@/components/jeecg/JDate'  
   import {queryAllClasses} from '@/api/api'
+  import moment from 'moment'
   
   export default {
     name: "EduStudentModal",
@@ -155,6 +156,7 @@
       edit (record) {
         this.initialClassList();
         this.form.resetFields();
+        record.birthDate=moment(record.birthDate, 'YYYY-MM');
         this.model = Object.assign({}, record);
         this.visible = true;
         this.$nextTick(() => {
