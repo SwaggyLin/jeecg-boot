@@ -105,6 +105,9 @@ const queryTeacherSubject=(params)=>getAction("/edu/user/eduTeacher/queryTeacher
 //班级
 const queryAllClasses=(params)=>getAction("/edu/eduClass/queryall",params);
 
+//考试
+const queryExamClasses=(params)=>getAction("/edu/exam/eduExam/queryExamClasses",params);
+
 
 export {
   // imgView,
@@ -157,7 +160,8 @@ export {
   queryAllSubjects,
   queryAllTeachers,
   queryTeacherSubject,
-  queryAllClasses
+  queryAllClasses,
+  queryExamClasses
 }
 
 
