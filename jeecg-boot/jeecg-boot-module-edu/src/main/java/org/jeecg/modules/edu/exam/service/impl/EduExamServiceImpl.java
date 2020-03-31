@@ -1,7 +1,6 @@
 package org.jeecg.modules.edu.exam.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.jeecg.common.util.oConvertUtils;
 import org.jeecg.modules.edu.exam.entity.EduExam;
@@ -37,6 +36,24 @@ public class EduExamServiceImpl extends ServiceImpl<EduExamMapper, EduExam> impl
     public void addExamWithClass(EduExam eduExam, String selectedClasses) {
         //保存考试信息
         this.save(eduExam);
+        this.saveExamClassAndGrade(eduExam,selectedClasses);
+    }
+
+    @Override
+    public void editExamWithClass(EduExam eduExam, String selectedClasses) {
+        //更新考试信息
+        this.updateById(eduExam);
+        eduExamClassMapper.delete(new LambdaQueryWrapper<EduExamClass>().eq(EduExamClass::getExamId, eduExam.getId()));
+        eduExamGradeMapper.delete(new LambdaQueryWrapper<EduExamGrade>().eq(EduExamGrade::getExamId, eduExam.getId()));
+        this.saveExamClassAndGrade(eduExam,selectedClasses);
+    }
+
+    /**
+     * 保存考试的班级信息并提前生成成绩的信息
+     * @param eduExam
+     * @param selectedClasses
+     */
+    private void saveExamClassAndGrade(EduExam eduExam, String selectedClasses) {
         if(oConvertUtils.isNotEmpty(selectedClasses)) {
             String[] arr = selectedClasses.split(",");
             for (String classId : arr) {
@@ -48,23 +65,6 @@ public class EduExamServiceImpl extends ServiceImpl<EduExamMapper, EduExam> impl
                 eduStudents.stream().forEach(eduStudent -> eduExamGradeMapper.insert(EduExamGrade.builder().examId(eduExam.getId()).classId(classId).studentId(eduStudent.getId()).build()));
             }
 
-        }
-    }
-
-    @Override
-    public void editExamWithClass(EduExam eduExam, String selectedClasses) {
-        this.updateById(eduExam);
-        eduExamClassMapper.delete(new QueryWrapper<EduExamClass>().lambda().eq(EduExamClass::getExamId, eduExam.getId()));
-        eduExamGradeMapper.delete(new QueryWrapper<EduExamGrade>().lambda().eq(EduExamGrade::getExamId, eduExam.getId()));
-        if(oConvertUtils.isNotEmpty(selectedClasses)) {
-            String[] arr = selectedClasses.split(",");
-            for (String classId : arr) {
-                EduExamClass examClass = new EduExamClass(eduExam.getId(), classId);
-                eduExamClassMapper.insert(examClass);
-                //提前生成成绩信息
-                List<EduStudent> eduStudents=eduStudentMapper.selectList(new LambdaQueryWrapper<EduStudent>().eq(EduStudent::getClassId,classId));
-                eduStudents.stream().forEach(eduStudent -> eduExamGradeMapper.insert(EduExamGrade.builder().examId(eduExam.getId()).classId(classId).studentId(eduStudent.getId()).build()));
-            }
         }
     }
 

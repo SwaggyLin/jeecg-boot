@@ -171,11 +171,11 @@
           this.loadExamClasses(record.id);
           //判断考试状态
           if(record.examState!='1'){//考试中
-            this.$message.error("考试已开始或已结束,不可编辑!")
+            this.$message.warning("考试已开始或已结束,不可编辑!")
             this.isDisabled=true;
           }
         }else{
-          this.isDisabled=false;
+          this.isDisabled=false ;
         }
         this.form.resetFields();
         this.model = Object.assign({}, record);
@@ -205,8 +205,6 @@
                method = 'put';
             }
             let formData = Object.assign(this.model, values);
-            console.log("选中班级",formData.selectedClass)
-            console.log("选中班级长度",formData.selectedClass.length)
             formData.selectedClasses = formData.selectedClass.length>0?formData.selectedClass.join(","):'';
             console.log("表单提交数据",formData)
             httpAction(httpurl,formData,method).then((res)=>{
