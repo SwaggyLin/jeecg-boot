@@ -68,8 +68,8 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" />
-          <a-dropdown>
+          <a-divider type="vertical" v-if="record.examState == '1'"/>
+          <a-dropdown v-if="record.examState == '1'">
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
               <a-menu-item>
