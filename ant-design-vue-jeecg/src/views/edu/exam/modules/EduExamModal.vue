@@ -173,6 +173,8 @@
           if(record.examState!='1'){//考试中
             this.$message.warning("考试已开始或已结束,不可编辑!")
             this.isDisabled=true;
+          }else{
+            this.isDisabled=false ;
           }
         }else{
           this.isDisabled=false ;

@@ -68,14 +68,17 @@
         <span slot="action" slot-scope="text, record">
           <a @click="handleEdit(record)">编辑</a>
 
-          <a-divider type="vertical" v-if="record.examState == '1'"/>
-          <a-dropdown v-if="record.examState == '1'">
+          <a-divider type="vertical" v-if="record.examState != '2'"/>
+          <a-dropdown v-if="record.examState != '2'">
             <a class="ant-dropdown-link">更多 <a-icon type="down" /></a>
             <a-menu slot="overlay">
-              <a-menu-item>
+              <a-menu-item v-if="record.examState == '1'">
                 <a-popconfirm title="确定删除吗?" @confirm="() => handleDelete(record.id)">
                   <a>删除</a>
                 </a-popconfirm>
+              </a-menu-item>
+              <a-menu-item v-if="record.examState == '3'">
+                  <a @click="handleEditExamGrade(record)">录入成绩</a>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -84,7 +87,8 @@
       </a-table>
     </div>
 
-    <eduExam-modal ref="modalForm" @ok="modalFormOk"></eduExam-modal>
+    <edu-exam-modal ref="modalForm" @ok="modalFormOk"></edu-exam-modal>
+    <edu-exam-grade-modal ref="editExamGradeTable"></edu-exam-grade-modal>
   </a-card>
 </template>
 
@@ -92,12 +96,14 @@
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
   import EduExamModal from './modules/EduExamModal'
+  import EduExamGradeModal from './modules/EduExamGradeModal'
 
   export default {
     name: "EduExamList",
     mixins:[JeecgListMixin],
     components: {
-      EduExamModal
+      EduExamModal,
+      EduExamGradeModal
     },
     data () {
       return {
@@ -136,9 +142,9 @@
           },
           {
             title:'考试时间',
-            aiign:"center",
+            align:"center",
             customRender:(text,record)=>{
-              return record.startTime+' -- '+record.endTime
+              return record.startTime+' － '+record.endTime
             }
           },
           {
@@ -171,7 +177,10 @@
       }
     },
     methods: {
-       
+      handleEditExamGrade: function (record) {
+        this.$refs.editExamGradeTable.edit(record);
+        this.$refs.editExamGradeTable.title = "录入成绩";
+      }  
     }
   }
 </script>

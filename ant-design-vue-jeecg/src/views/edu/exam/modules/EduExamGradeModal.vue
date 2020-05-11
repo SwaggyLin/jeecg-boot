@@ -1,133 +1,155 @@
 <template>
   <a-modal
     :title="title"
-    :width="width"
+    :fullScreen="fullScreen"
     :visible="visible"
-    :confirmLoading="confirmLoading"
-    @ok="handleOk"
-    @cancel="handleCancel"
-    cancelText="关闭">
-    <a-spin :spinning="confirmLoading">
-      <a-form :form="form">
+    :width="width"
+    :bodyStyle ="bodyStyle"
+    :closable="false"
+    cancelText="关闭"
+    @ok="()=>this.visible=false"
+    @cancel="()=>this.visible=false">
+    <!-- 查询区域 -->
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline" @keyup.enter.native="searchQuery">
+        <a-row :gutter="24">
 
-        <a-form-item label="考试id" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'examId', validatorRules.examId]" placeholder="请输入考试id"></a-input>
-        </a-form-item>
-        <a-form-item label="学生id" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'studentId', validatorRules.studentId]" placeholder="请输入学生id"></a-input>
-        </a-form-item>
-        <a-form-item label="班级id" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input v-decorator="[ 'classId', validatorRules.classId]" placeholder="请输入班级id"></a-input>
-        </a-form-item>
-        <a-form-item label="成绩" :labelCol="labelCol" :wrapperCol="wrapperCol">
-          <a-input-number v-decorator="[ 'grade', validatorRules.grade]" placeholder="请输入成绩" style="width: 100%"/>
-        </a-form-item>
-
+        </a-row>
       </a-form>
-    </a-spin>
+    </div>
+    <!-- 查询区域-END -->
+    
+
+    <!-- table区域-begin -->
+    <div>
+      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
+        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
+        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
+      </div>
+
+      <j-editable-table
+        ref="editableTable"
+        :loading="loading"
+        :columns="columns"
+        :dataSource="dataSource"
+        :rowNumber=true
+        :rowSelection=true
+        :actionButton=true
+        :dragSort="true"
+        style="margin-top: 8px;"
+        @selectRowChange="handleSelectRowChange">
+
+        <template v-slot:action="props">
+          <a @click="handleDelete(props)">{{ props.text }}</a>
+        </template>
+
+      </j-editable-table>
+    </div>
+
   </a-modal>
 </template>
 
 <script>
 
-  import { httpAction } from '@/api/manage'
-  import pick from 'lodash.pick'
-  import { validateDuplicateValue } from '@/utils/util'
+  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import JEditableTable from '@/components/jeecg/JEditableTable'
 
   export default {
     name: "EduExamGradeModal",
-    components: { 
+    mixins:[JeecgListMixin],
+    components: {
+      JEditableTable
     },
     data () {
       return {
-        form: this.$form.createForm(this),
+        loading: false,
         title:"操作",
-        width:800,
-        visible: false,
-        model: {},
-        labelCol: {
-          xs: { span: 24 },
-          sm: { span: 5 },
+        description: '考试成绩表管理页面',
+        visible:false,
+        width:'100%',
+        bodyStyle:{
+          padding: "0",
+          height:(window.innerHeight)+"px",
+          "overflow-y":"auto",
         },
-        wrapperCol: {
-          xs: { span: 24 },
-          sm: { span: 16 },
-        },
-        confirmLoading: false,
-        validatorRules: {
-          examId: {rules: [
-          ]},
-          studentId: {rules: [
-          ]},
-          classId: {rules: [
-          ]},
-          grade: {rules: [
-          ]},
-        },
+        fullScreen:true,
+        confirmLoading:false,
+        // 表头
+        columns: [
+          {
+            title: '#',
+            dataIndex: '',
+            key:'rowIndex',
+            width:60,
+            align:"center",
+            customRender:function (t,r,index) {
+              return parseInt(index)+1;
+            }
+          },
+          {
+            title:'评卷人',
+            align:"center",
+            dataIndex: 'createBy'
+          },
+          {
+            title:'评卷日期',
+            align:"center",
+            dataIndex: 'createTime'
+          },
+          {
+            title:'考试id',
+            align:"center",
+            dataIndex: 'examId'
+          },
+          {
+            title:'学生id',
+            align:"center",
+            dataIndex: 'studentId'
+          },
+          {
+            title:'班级id',
+            align:"center",
+            dataIndex: 'classId'
+          },
+          {
+            title:'成绩',
+            align:"center",
+            dataIndex: 'grade'
+          },
+          {
+            title: '操作',
+            dataIndex: 'action',
+            align:"center",
+            scopedSlots: { customRender: 'action' }
+          }
+        ],
+        dataSource: [],
+        selectedRowIds: [],
         url: {
-          add: "/edu/exam/eduExamGrade/add",
-          edit: "/edu/exam/eduExamGrade/edit",
+          list: "/edu/exam/eduExamGrade/list"       
         }
       }
     },
-    created () {
+    computed: {
     },
     methods: {
-      add () {
-        this.edit({});
-      },
       edit (record) {
-        this.form.resetFields();
-        this.model = Object.assign({}, record);
-        this.visible = true;
-        this.$nextTick(() => {
-          this.form.setFieldsValue(pick(this.model,'createBy','createTime','examId','studentId','classId','grade'))
-        })
+        if(record.hasOwnProperty("id")){
+          this.visible=true;
+        }else{
+          this.$message.warning("参数错误!")
+        }
+        //this.model = Object.assign({}, record);
+        // this.$nextTick(() => {
+        //   this.form.setFieldsValue(pick(this.model,'examName','examType','startTime','endTime','examState','examPeriod','subjectId'))
+        // })
       },
-      close () {
-        this.$emit('close');
-        this.visible = false;
-      },
-      handleOk () {
-        const that = this;
-        // 触发表单验证
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            that.confirmLoading = true;
-            let httpurl = '';
-            let method = '';
-            if(!this.model.id){
-              httpurl+=this.url.add;
-              method = 'post';
-            }else{
-              httpurl+=this.url.edit;
-               method = 'put';
-            }
-            let formData = Object.assign(this.model, values);
-            console.log("表单提交数据",formData)
-            httpAction(httpurl,formData,method).then((res)=>{
-              if(res.success){
-                that.$message.success(res.message);
-                that.$emit('ok');
-              }else{
-                that.$message.warning(res.message);
-              }
-            }).finally(() => {
-              that.confirmLoading = false;
-              that.close();
-            })
-          }
-         
-        })
-      },
-      handleCancel () {
-        this.close()
-      },
-      popupCallback(row){
-        this.form.setFieldsValue(pick(row,'createBy','createTime','examId','studentId','classId','grade'))
-      },
-
-      
+      handleSelectRowChange(selectedRowIds) {
+        this.selectedRowIds = selectedRowIds
+      }
     }
   }
 </script>
+<style scoped>
+  @import '~@assets/less/common.less'
+</style>

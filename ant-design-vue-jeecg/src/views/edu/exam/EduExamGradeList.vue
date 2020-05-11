@@ -84,20 +84,18 @@
       </a-table>
     </div>
 
-    <eduExamGrade-modal ref="modalForm" @ok="modalFormOk"></eduExamGrade-modal>
   </a-card>
 </template>
 
 <script>
 
   import { JeecgListMixin } from '@/mixins/JeecgListMixin'
-  import EduExamGradeModal from './modules/EduExamGradeModal'
 
   export default {
     name: "EduExamGradeList",
     mixins:[JeecgListMixin],
     components: {
-      EduExamGradeModal
+      
     },
     data () {
       return {
@@ -125,19 +123,19 @@
             dataIndex: 'createTime'
           },
           {
-            title:'考试id',
+            title:'考试名称',
             align:"center",
-            dataIndex: 'examId'
+            dataIndex: 'examName'
           },
           {
-            title:'学生id',
+            title:'学生',
             align:"center",
-            dataIndex: 'studentId'
+            dataIndex: 'studentName'
           },
           {
-            title:'班级id',
+            title:'班级',
             align:"center",
-            dataIndex: 'classId'
+            dataIndex: 'className'
           },
           {
             title:'成绩',
