@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 关联数据转换aop类
@@ -173,10 +174,12 @@ public class RelativeDataAspect {
         String primaryKey = field.getAnnotation(RelativeData.class).primaryKey();
         String relativeKey = String.valueOf(item.get(field.getName()));
         //翻译
-        String textValue = translateRelativeDataValue(tableName, fieldName, primaryKey, relativeKey);
-        log.debug(" 结果Val : "+ textValue);
-        log.debug(" __翻译relativeData__ "+StrUtil.toCamelCase(fieldName)+"： "+ textValue);
-        item.put(StrUtil.toCamelCase(fieldName), textValue);
+        Map<String, Object> resultMap = translateRelativeDataValue(tableName, fieldName, primaryKey, relativeKey);
+        for (String key : fieldName.split(",")) {
+            log.debug(" 结果Val : "+ resultMap.get(key));
+            log.debug(" __翻译relativeData__ "+StrUtil.toCamelCase(key)+"： "+ resultMap.get(key));
+            item.put(StrUtil.toCamelCase(key), resultMap.get(key));
+        }
     }
 
     /**
@@ -187,7 +190,7 @@ public class RelativeDataAspect {
      * @param relativeKey
      * @return
      */
-    private String translateRelativeDataValue(String tableName, String fieldName, String primaryKey, String relativeKey) {
+    private Map<String, Object> translateRelativeDataValue(String tableName, String fieldName, String primaryKey, String relativeKey) {
         if (!StringUtils.isEmpty(relativeKey)){
             return sysBaseAPI.getRelativeData(tableName,fieldName,primaryKey,relativeKey);
         }else {

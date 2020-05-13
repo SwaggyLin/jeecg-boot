@@ -1,5 +1,6 @@
 package org.jeecg.modules.system.aspect;
 
+import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 导出Excel数据转换
@@ -60,11 +62,18 @@ public class ExportXlsDataAspect {
         String primaryKey = field.getAnnotation(RelativeData.class).primaryKey();
         String relativeKey = String.valueOf(field.get(record));
         //翻译
-        String textValue = translateRelativeDataValue(tableName, fieldName, primaryKey, relativeKey);
-        field.set(record,textValue);
+//        String textValue = translateRelativeDataValue(tableName, fieldName, primaryKey, relativeKey);
+//        field.set(record,textValue);
+        //翻译
+        Map<String, Object> resultMap = translateRelativeDataValue(tableName, fieldName, primaryKey, relativeKey);
+        for (String key : fieldName.split(",")) {
+            log.debug(" 结果Val : "+ resultMap.get(key));
+            log.debug(" __翻译relativeData__ "+ StrUtil.toCamelCase(key)+"： "+ resultMap.get(key));
+            field.set(record,resultMap.get(key));
+        }
     }
 
-    private String translateRelativeDataValue(String tableName, String fieldName, String primaryKey, String relativeKey) {
+    private Map<String, Object> translateRelativeDataValue(String tableName, String fieldName, String primaryKey, String relativeKey) {
         if (!StringUtils.isEmpty(relativeKey)){
             return sysBaseAPI.getRelativeData(tableName,fieldName,primaryKey,relativeKey);
         }else {

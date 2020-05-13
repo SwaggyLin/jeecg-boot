@@ -1,13 +1,13 @@
 package org.jeecg.common.system.api;
 
-import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-
 import org.jeecg.common.system.vo.ComboModel;
 import org.jeecg.common.system.vo.DictModel;
 import org.jeecg.common.system.vo.LoginUser;
 import org.jeecg.common.system.vo.SysDepartModel;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 底层共通业务API，提供其他独立模块调用
@@ -202,5 +202,5 @@ public interface ISysBaseAPI {
 	 * @param relativeKey
 	 * @return
 	 */
-	String getRelativeData(String tableName, String fieldName, String primaryKey, String relativeKey);
+	Map<String, Object> getRelativeData(String tableName, String fieldName, String primaryKey, String relativeKey);
 }

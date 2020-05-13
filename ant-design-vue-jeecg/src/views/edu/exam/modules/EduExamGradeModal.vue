@@ -22,10 +22,6 @@
 
     <!-- table区域-begin -->
     <div>
-      <div class="ant-alert ant-alert-info" style="margin-bottom: 16px;">
-        <i class="anticon anticon-info-circle ant-alert-icon"></i> 已选择 <a style="font-weight: 600">{{ selectedRowKeys.length }}</a>项
-        <a style="margin-left: 24px" @click="onClearSelected">清空</a>
-      </div>
 
       <j-editable-table
         ref="editableTable"
@@ -36,6 +32,7 @@
         :rowSelection=true
         :actionButton=true
         :dragSort="true"
+        dragSortKey="seatNum"
         style="margin-top: 8px;"
         @selectRowChange="handleSelectRowChange">
 
@@ -51,12 +48,13 @@
 
 <script>
 
-  import { JeecgListMixin } from '@/mixins/JeecgListMixin'
+  import { FormTypes } from '@/utils/JEditableTableUtil'
   import JEditableTable from '@/components/jeecg/JEditableTable'
+  import { getAction } from '@/api/manage'
+
 
   export default {
     name: "EduExamGradeModal",
-    mixins:[JeecgListMixin],
     components: {
       JEditableTable
     },
@@ -66,11 +64,12 @@
         title:"操作",
         description: '考试成绩表管理页面',
         visible:false,
-        width:'100%',
+        width:'99%',
         bodyStyle:{
+          top:"0",
           padding: "0",
           height:(window.innerHeight)+"px",
-          "overflow-y":"auto",
+          "overflow-y":"auto"
         },
         fullScreen:true,
         confirmLoading:false,
@@ -84,43 +83,60 @@
             align:"center",
             customRender:function (t,r,index) {
               return parseInt(index)+1;
-            }
+            },
+            type:FormTypes.normal
           },
           {
             title:'评卷人',
             align:"center",
-            dataIndex: 'createBy'
+            key: 'createBy',
+            type:FormTypes.normal
           },
           {
             title:'评卷日期',
             align:"center",
-            dataIndex: 'createTime'
+            key: 'createTime',
+            type:FormTypes.datetime
           },
           {
-            title:'考试id',
+            title:'考试名称',
             align:"center",
-            dataIndex: 'examId'
+            key: 'examName',
+            type:FormTypes.normal
           },
           {
-            title:'学生id',
+            title:'学生',
             align:"center",
-            dataIndex: 'studentId'
+            key: 'studentName',
+            type:FormTypes.normal
           },
           {
-            title:'班级id',
+            title:'座号',
             align:"center",
-            dataIndex: 'classId'
+            key: 'seatNum',
+            type:FormTypes.normal
+          },
+          {
+            title:'班级',
+            align:"center",
+            key: 'className',
+            type:FormTypes.normal
           },
           {
             title:'成绩',
             align:"center",
-            dataIndex: 'grade'
+            type: FormTypes.input,
+            allowInput: true,
+            defaultValue: '',
+            key: 'grade'
           },
           {
             title: '操作',
-            dataIndex: 'action',
+            key: 'action',
             align:"center",
-            scopedSlots: { customRender: 'action' }
+            //scopedSlots: { customRender: 'action' },
+            type: FormTypes.slot,
+            slotName: 'action',
           }
         ],
         dataSource: [],
@@ -131,19 +147,50 @@
       }
     },
     computed: {
+      
     },
     methods: {
       edit (record) {
         if(record.hasOwnProperty("id")){
           this.visible=true;
+          this.loadData(record.id)
         }else{
           this.$message.warning("参数错误!")
         }
-        //this.model = Object.assign({}, record);
-        // this.$nextTick(() => {
-        //   this.form.setFieldsValue(pick(this.model,'examName','examType','startTime','endTime','examState','examPeriod','subjectId'))
-        // })
       },
+      loadData(examId){
+        if(!this.url.list){
+          this.$message.error("请设置url.list属性!")
+          return
+        }
+        // var params = this.getQueryParams();//查询条件
+        var params ={};
+        params.examId=examId;
+        this.loading=true;
+        getAction(this.url.list, params).then((res) => {
+        if (res.success) {
+          this.dataSource = res.result.records;
+          //this.ipagination.total = res.result.total;
+          console.log()
+        }
+        if(res.code===510){
+          this.$message.warning(res.message)
+        }
+        this.loading = false;
+      })
+      },
+      // getQueryParams() {
+      //   //获取查询条件
+      //   let sqp = {}
+      //   if(this.superQueryParams){
+      //     sqp['superQueryParams']=encodeURI(this.superQueryParams)
+      //   }
+      //   var param = Object.assign(sqp, this.queryParam, this.isorter ,this.filters);
+      //   param.field = this.getQueryField();
+      //   param.pageNo = this.ipagination.current;
+      //   param.pageSize = this.ipagination.pageSize;
+      //   return filterObj(param);
+      // },
       handleSelectRowChange(selectedRowIds) {
         this.selectedRowIds = selectedRowIds
       }

@@ -1,10 +1,10 @@
 package org.jeecg.modules.edu.exam.mapper;
 
-import java.util.List;
-
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 import org.jeecg.modules.edu.exam.entity.EduExamGrade;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.jeecg.modules.edu.exam.entity.vo.EduExamGradeVO;
 import org.springframework.stereotype.Repository;
 
 
@@ -16,5 +16,5 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface EduExamGradeMapper extends BaseMapper<EduExamGrade> {
-
+    IPage<EduExamGradeVO> getExamGradeList(@Param("eduExamGrade") EduExamGrade eduExamGrade);
 }

@@ -1,12 +1,9 @@
 package org.jeecg.modules.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
-import org.jeecg.modules.system.entity.SysAnnouncement;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * @Description: 系统通告表
@@ -18,5 +15,5 @@ import java.util.List;
 public interface SysCommonMapper {
 
 
-	String getRelativeData(@Param("tableName") String tableName, @Param("fieldName") String fieldName, @Param("primaryKey") String primaryKey, @Param("relativeKey") String relativeKey);
+	Map<String,Object> getRelativeData(@Param("tableName") String tableName, @Param("fieldName") String fieldName, @Param("primaryKey") String primaryKey, @Param("relativeKey") String relativeKey);
 }

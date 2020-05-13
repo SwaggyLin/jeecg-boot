@@ -1,7 +1,10 @@
 package org.jeecg.modules.edu.exam.service;
 
-import org.jeecg.modules.edu.exam.entity.EduExamGrade;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.jeecg.modules.edu.exam.entity.EduExamGrade;
+import org.jeecg.modules.edu.exam.entity.vo.EduExamGradeVO;
 
 /**
  * @Description: 考试成绩表
@@ -11,4 +14,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IEduExamGradeService extends IService<EduExamGrade> {
 
+    IPage<EduExamGradeVO> selectPage(Page<EduExamGradeVO> page, EduExamGrade eduExamGrade);
 }

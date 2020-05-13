@@ -53,7 +53,7 @@ public class EduExamGrade implements Serializable {
     private java.lang.String examId;
 	/**学生id*/
 	@Excel(name = "学生id", width = 15)
-	@RelativeData(mainTable = "edu_student",fieldName = "student_name")
+	@RelativeData(mainTable = "edu_student",fieldName = "student_name,seat_num")
 	private java.lang.String studentId;
 	/**班级id*/
 	@RelativeData(mainTable = "edu_class",fieldName = "class_name")

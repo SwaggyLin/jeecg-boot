@@ -1,13 +1,12 @@
 package org.jeecg.modules.edu.exam.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.jeecg.common.api.vo.Result;
 import org.jeecg.common.system.base.controller.JeecgController;
-import org.jeecg.common.system.query.QueryGenerator;
 import org.jeecg.modules.edu.exam.entity.EduExamGrade;
+import org.jeecg.modules.edu.exam.entity.vo.EduExamGradeVO;
 import org.jeecg.modules.edu.exam.service.IEduExamGradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,17 +35,14 @@ public class EduExamGradeController extends JeecgController<EduExamGrade, IEduEx
 	 * @param eduExamGrade
 	 * @param pageNo
 	 * @param pageSize
-	 * @param req
 	 * @return
 	 */
 	@GetMapping(value = "/list")
 	public Result<?> queryPageList(EduExamGrade eduExamGrade,
 								   @RequestParam(name="pageNo", defaultValue="1") Integer pageNo,
-								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize,
-								   HttpServletRequest req) {
-		QueryWrapper<EduExamGrade> queryWrapper = QueryGenerator.initQueryWrapper(eduExamGrade, req.getParameterMap());
-		Page<EduExamGrade> page = new Page<EduExamGrade>(pageNo, pageSize);
-		IPage<EduExamGrade> pageList = eduExamGradeService.page(page, queryWrapper);
+								   @RequestParam(name="pageSize", defaultValue="10") Integer pageSize) {
+		Page<EduExamGradeVO> page = new Page<>(pageNo, pageSize);
+		IPage<EduExamGradeVO> pageList = eduExamGradeService.selectPage(page,eduExamGrade);
 		return Result.ok(pageList);
 	}
 	
