@@ -10,8 +10,6 @@ import org.jeecg.modules.edu.exam.service.IEduExamGradeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 /**
  * @Description: 考试成绩表
  * @Author: jeecg-boot
@@ -24,7 +22,7 @@ public class EduExamGradeServiceImpl extends ServiceImpl<EduExamGradeMapper, Edu
     private EduExamGradeMapper eduExamGradeMapper;
     @Override
     public IPage<EduExamGradeVO> selectPage(Page<EduExamGradeVO> page,EduExamGrade eduExamGrade) {
-        IPage<EduExamGradeVO> eduExamGradeVOList=eduExamGradeMapper.getExamGradeList(eduExamGrade);
-        return page;
+        IPage<EduExamGradeVO> eduExamGradeVOList=eduExamGradeMapper.getExamGradeList(page,eduExamGrade);
+        return eduExamGradeVOList;
     }
 }
